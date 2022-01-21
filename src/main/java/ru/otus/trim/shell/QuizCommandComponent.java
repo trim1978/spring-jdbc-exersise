@@ -6,6 +6,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.trim.dao.LibraryDao;
 import ru.otus.trim.domain.Author;
+import ru.otus.trim.domain.Book;
 import ru.otus.trim.domain.Genre;
 
 import java.util.List;
@@ -42,6 +43,11 @@ public class QuizCommandComponent {
         return library.insertAuthor(name);
     }
 
+    @ShellMethod(value = "Add book", key = "ins_book")
+    public Book addAuthor(String title, String author, String genre) {
+        return library.insertBook(title, author, genre);
+    }
+
     @ShellMethod(value = "Remove author", key = "remove_author")
     public String removeAuthor(int id) {
         boolean removed = library.deleteAuthorById(id);
@@ -54,10 +60,14 @@ public class QuizCommandComponent {
     }
 
     @ShellMethod(value = "Get all genres", key = "get_genres")
-    public List<Genre>  getGenres() {
+    public List<Genre> getGenres() {
         return library.getAllAGenres();
     }
 
+    @ShellMethod(value = "Get all books", key = "get_books")
+    public List<Book> getBooks() {
+        return library.getAllBooks();
+    }
 
 //    @ShellMethod(value = "Who is here", key = "who")
 //    public String getStudent() {

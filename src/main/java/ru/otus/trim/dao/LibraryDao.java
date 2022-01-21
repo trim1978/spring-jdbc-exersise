@@ -21,13 +21,15 @@ public interface LibraryDao {
 
     List<Author> getAllAuthors();
 
+    Genre getGenreById(int id);
+
     List<Genre> getAllAGenres();
 
-    List<Book> getAllABooks();
+    List<Book> getAllBooks();
 
     boolean deleteBookById(long id);
 
     int getBooksCount();
 
-    void insertBook(Book book);
+    Book insertBook(String title, String author, String genre);
 }

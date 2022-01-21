@@ -42,10 +42,31 @@ public class LibraryDaoJdbc implements LibraryDao {
     }
 
     @Override
-    public void insertBook(Book book) {
-        //namedParameterJdbcOperations.c
-        namedParameterJdbcOperations.update("insert into books (id, name) values (:id, :name, :author, :genre)",
-                Map.of("id", book.getId(), "name", book.getName(), "author", book.getAuthor().getId(), "genre", book.getGenre().getId()));
+    @Transactional(readOnly = true)
+    public Book insertBook(String title, String author, String genre) {
+//        namedParameterJdbcOperations.update("insert into books (id, name) values (:id, :name, :author, :genre)",
+//                Map.of("id", book.getId(), "name", book.getName(), "author", book.getAuthor().getId(), "genre", book.getGenre().getId()));
+        String sql = "INSERT INTO books(title,author,genre) VALUES (?,?,?)";
+
+        var decParams = List.of(
+                new SqlParameter(Types.VARCHAR, "title"), new SqlParameter(Types.INTEGER, "author"), new SqlParameter(Types.INTEGER, "genre"));
+
+        var pscf = new PreparedStatementCreatorFactory(sql, decParams) {
+            {
+                setReturnGeneratedKeys(true);
+                setGeneratedKeysColumnNames("id");
+            }
+        };
+        int authorId = getAuthorByName(author).getId();
+        int genreId = getGenreByName(genre).getId();
+
+        var psc = pscf.newPreparedStatementCreator(List.of(title, authorId, genreId));
+
+        var keyHolder = new GeneratedKeyHolder();
+        jdbc.update(psc, keyHolder);
+
+        int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
+        return new Book(id, title, new Author(authorId, author), new Genre(genreId, genre));
     }
 
     @Override
@@ -63,7 +84,6 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     @Override
     public Author insertAuthor(final String name) {
-
         String sql = "INSERT INTO authors(name) VALUES (?)";
 
         var decParams = List.of(
@@ -94,10 +114,35 @@ public class LibraryDaoJdbc implements LibraryDao {
         );
     }
 
+    private Author getAuthorByName(String name) {
+        Map<String, Object> params = Collections.singletonMap("name", name);
+        Author author = namedParameterJdbcOperations.queryForObject(
+                "select id, name from authors where name = :name", params, new AuthorMapper()
+        );
+        if (author == null) author = insertAuthor(name);
+        return author;
+    }
+
+    private Genre getGenreByName(String name) {
+        Map<String, Object> params = Collections.singletonMap("name", name);
+        return namedParameterJdbcOperations.queryForObject(
+                "select id, name from genres where name = :name", params, new GenreMapper()
+        );
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Author> getAllAuthors() {
         return jdbc.query("select id, name from authors", new AuthorMapper());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Genre getGenreById(int id) {
+        Map<String, Object> params = Collections.singletonMap("id", id);
+        return namedParameterJdbcOperations.queryForObject(
+                "select id, name from genres where id = :id", params, new GenreMapper()
+        );
     }
 
     @Override
@@ -107,8 +152,8 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Book> getAllABooks() {
-        return null;
+    public List<Book> getAllBooks() {
+        return jdbc.query("select id, title, author, genre from books", new BookMapper());
     }
 
     @Override
@@ -144,6 +189,17 @@ public class LibraryDaoJdbc implements LibraryDao {
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             return new Author(id, name);
+        }
+    }
+
+    private class BookMapper implements RowMapper<Book> {
+        @Override
+        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
+            long id = resultSet.getInt("id");
+            String title = resultSet.getString("title");
+            int author = resultSet.getInt("author");
+            int genre = resultSet.getInt("genre");
+            return new Book(id, title, getAuthorById(author), getGenreById(genre));
         }
     }
 }

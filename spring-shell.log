@@ -15,3 +15,13 @@
 1642771637965:get_authors
 1642772504104:ins_authors nosov
 1642772514586:ins_author nosov
+1642796197224:help
+1642796246945:ins_author nosov
+1642796280829:ins_book neznaika nosov adventure
+1642796409523:ins_author nosov
+1642796421411:ins_book neznaika nosov adventure
+1642796448776:ins_book neznaika nosov adventures
+1642796557095:get_books
+1642797003529:ins_author nosov
+1642797028060:ins_book neznaika nosov adventures
+1642797034698:get_books
