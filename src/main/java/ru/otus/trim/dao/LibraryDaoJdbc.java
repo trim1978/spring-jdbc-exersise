@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.trim.domain.Author;
+import ru.otus.trim.domain.Book;
 import ru.otus.trim.domain.Genre;
 
 import java.sql.ResultSet;
@@ -21,14 +22,12 @@ public class LibraryDaoJdbc implements LibraryDao {
 
     public LibraryDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations)
     {
-        // Это просто оставили, чтобы не переписывать код
-        // В идеале всё должно быть на NamedParameterJdbcOperations
         this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 
     @Override
-    public int count() {
+    public int getBooksCount() {
         Integer count = jdbc.queryForObject("select count(*) from books", Integer.class);
         return count == null? 0: count;
     }
@@ -59,11 +58,22 @@ public class LibraryDaoJdbc implements LibraryDao {
     }
 
     @Override
-    public void deleteAuthorById(int id) {
+    public List<Genre> getAllAGenres() {
+        return jdbc.query("select id, name from genres", new GenreMapper());
+    }
+
+    @Override
+    public List<Book> getAllABooks() {
+        return null;
+    }
+
+    @Override
+    public boolean deleteAuthorById(int id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         namedParameterJdbcOperations.update(
                 "delete from authors where id = :id", params
         );
+        return true;
     }
 
     private static class GenreMapper implements RowMapper<Genre> {

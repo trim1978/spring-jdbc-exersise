@@ -16,3 +16,8 @@ spring:
       settings:
         web-allow-others: true
 
+  profiles:
+    active: shell
+
+  main:
+    allow-circular-references: true
