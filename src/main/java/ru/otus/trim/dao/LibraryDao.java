@@ -10,14 +10,24 @@ public interface LibraryDao {
 
 
     int getAuthorsCount();
-    void insertAuthor(Author person);
+
+    void insertAuthor(Author author);
+
+    Author insertAuthor(String name);
+
     Author getAuthorById(int id);
+
     boolean deleteAuthorById(int id);
 
     List<Author> getAllAuthors();
+
     List<Genre> getAllAGenres();
 
     List<Book> getAllABooks();
+
+    boolean deleteBookById(long id);
+
     int getBooksCount();
 
+    void insertBook(Book book);
 }

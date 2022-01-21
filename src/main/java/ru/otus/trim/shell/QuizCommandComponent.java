@@ -37,6 +37,11 @@ public class QuizCommandComponent {
         return "author was added";
     }
 
+    @ShellMethod(value = "Add author", key = "ins_author")
+    public Author addAuthor(String name) {
+        return library.insertAuthor(name);
+    }
+
     @ShellMethod(value = "Remove author", key = "remove_author")
     public String removeAuthor(int id) {
         boolean removed = library.deleteAuthorById(id);
@@ -44,15 +49,13 @@ public class QuizCommandComponent {
     }
 
     @ShellMethod(value = "Get all authors", key = "get_authors")
-    public List<Author>  getAuthors() {
-        List<Author> list = library.getAllAuthors();
-        return list;
+    public List<Author> getAuthors() {
+        return library.getAllAuthors();
     }
 
     @ShellMethod(value = "Get all genres", key = "get_genres")
     public List<Genre>  getGenres() {
-        List<Genre> list = library.getAllAGenres();
-        return list;
+        return library.getAllAGenres();
     }
 
 

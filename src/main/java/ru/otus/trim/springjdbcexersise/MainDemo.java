@@ -5,23 +5,25 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import ru.otus.trim.dao.LibraryDao;
 import ru.otus.trim.domain.Author;
 
 @SpringBootApplication
+@Profile("console")
 @ComponentScan("ru.otus.trim")
-public class SpringJdbcExersiseApplication {
+public class MainDemo {
 
-	public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
 
-		ApplicationContext context = SpringApplication.run(SpringJdbcExersiseApplication.class, args);
+        ApplicationContext context = SpringApplication.run(MainDemo.class, args);
 
-		LibraryDao dao = context.getBean(LibraryDao.class);
+        LibraryDao dao = context.getBean(LibraryDao.class);
 
-		System.out.println("All count " + dao.getAuthorsCount());
+        System.out.println("All count " + dao.getAuthorsCount());
 
-		dao.insertAuthor(new Author(2, "Lermontov"));
+        dao.insertAuthor(new Author(2, "Lermontov"));
 
 		System.out.println("All count " + dao.getAuthorsCount());
 

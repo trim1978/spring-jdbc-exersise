@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//@EqualsAndHashCode()
+//@ToString()
 public class Author {
     private int id;
     private String name;
