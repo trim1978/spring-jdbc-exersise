@@ -32,11 +32,11 @@ public class QuizCommandComponent {
 //        return "Student is ready";
 //    }
 
-    @ShellMethod(value = "Add author", key = "add_author")
-    public String addAuthor(int id, String name) {
-        library.insertAuthor(new Author(id, name));
-        return "author was added";
-    }
+//    @ShellMethod(value = "Add author", key = "add_author")
+//    public String addAuthor(int id, String name) {
+//        library.insertAuthor(new Author(id, name));
+//        return "author was added";
+//    }
 
     @ShellMethod(value = "Add author", key = "ins_author")
     public Author addAuthor(String name) {
@@ -46,6 +46,12 @@ public class QuizCommandComponent {
     @ShellMethod(value = "Add book", key = "ins_book")
     public Book addAuthor(String title, String author, String genre) {
         return library.insertBook(title, author, genre);
+    }
+
+    @ShellMethod(value = "Remove book", key = "remove_book")
+    public String removeBook(long id) {
+        boolean removed = library.deleteBookById(id);
+        return "book was removed " + removed;
     }
 
     @ShellMethod(value = "Remove author", key = "remove_author")
@@ -69,12 +75,4 @@ public class QuizCommandComponent {
         return library.getAllBooks();
     }
 
-//    @ShellMethod(value = "Who is here", key = "who")
-//    public String getStudent() {
-//        return student != null ? student.firstName + " " + student.lastName : "< none >";
-//    }
-//
-//    private Availability isQuizStartAvailable() {
-//        return student == null? Availability.unavailable("You must enter before"): Availability.available();
-//    }
 }

@@ -21,3 +21,5 @@ spring:
       enabled: false
   main:
     allow-circular-references: true
+  profiles:
+    active: console

@@ -16,10 +16,7 @@ import ru.otus.trim.domain.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Repository
 @Profile({"shell", "console"})
@@ -28,18 +25,17 @@ public class LibraryDaoJdbc implements LibraryDao {
     private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
-    public LibraryDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations)
-    {
+    public LibraryDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
         this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public int getBooksCount() {
-        Integer count = jdbc.queryForObject("select count(*) from books", Integer.class);
-        return count == null ? 0 : count;
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public int getBooksCount() {
+//        Integer count = jdbc.queryForObject("select count(*) from books", Integer.class);
+//        return count == null ? 0 : count;
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -69,18 +65,18 @@ public class LibraryDaoJdbc implements LibraryDao {
         return new Book(id, title, new Author(authorId, author), new Genre(genreId, genre));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public int getAuthorsCount() {
-        Integer count = jdbc.queryForObject("select count(*) from authors", Integer.class);
-        return count == null ? 0 : count;
-    }
-
-    @Override
-    public void insertAuthor(Author author) {
-        namedParameterJdbcOperations.update("insert into authors (id, name) values (:id, :name)",
-                Map.of("id", author.getId(), "name", author.getName()));
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public int getAuthorsCount() {
+//        Integer count = jdbc.queryForObject("select count(*) from authors", Integer.class);
+//        return count == null ? 0 : count;
+//    }
+//
+//    @Override
+//    public void insertAuthor(Author author) {
+//        namedParameterJdbcOperations.update("insert into authors (id, name) values (:id, :name)",
+//                Map.of("id", author.getId(), "name", author.getName()));
+//    }
 
     @Override
     public Author insertAuthor(final String name) {
@@ -172,6 +168,16 @@ public class LibraryDaoJdbc implements LibraryDao {
                 "delete from books where id = :id", params
         );
         return true;
+    }
+
+    @Override
+    public void updateBookById(long id, String title) {
+        Map<String, Object> params = new HashMap<>(2);
+        params.put("id", id);
+        params.put("title", title);
+        namedParameterJdbcOperations.update(
+                "update books set title=:title where id = :id", params
+        );
     }
 
     private static class GenreMapper implements RowMapper<Genre> {

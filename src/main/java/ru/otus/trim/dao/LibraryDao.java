@@ -9,9 +9,9 @@ import java.util.List;
 public interface LibraryDao {
 
 
-    int getAuthorsCount();
+    //int getAuthorsCount();
 
-    void insertAuthor(Author author);
+    //void insertAuthor(Author author);
 
     Author insertAuthor(String name);
 
@@ -29,7 +29,8 @@ public interface LibraryDao {
 
     boolean deleteBookById(long id);
 
-    int getBooksCount();
+    void updateBookById(long id, String title);
+    //int getBooksCount();
 
     Book insertBook(String title, String author, String genre);
 }

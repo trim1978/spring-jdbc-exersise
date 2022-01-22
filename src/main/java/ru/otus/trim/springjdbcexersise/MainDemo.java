@@ -21,11 +21,11 @@ public class MainDemo {
 
         LibraryDao dao = context.getBean(LibraryDao.class);
 
-        System.out.println("All count " + dao.getAuthorsCount());
+        //System.out.println("All count " + dao.getAuthorsCount());
 
-        dao.insertAuthor(new Author(2, "Lermontov"));
+        dao.insertAuthor("Lermontov");
 
-		System.out.println("All count " + dao.getAuthorsCount());
+        //System.out.println("All count " + dao.getAuthorsCount());
 
 		Author author = dao.getAuthorById(2);
 
