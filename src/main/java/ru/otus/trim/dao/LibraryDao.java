@@ -33,4 +33,6 @@ public interface LibraryDao {
     //int getBooksCount();
 
     Book insertBook(String title, String author, String genre);
+
+    //boolean setBookGenre (long id, String genre);
 }
