@@ -1,78 +1,63 @@
 package ru.otus.trim.shell;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import ru.otus.trim.dao.LibraryDao;
 import ru.otus.trim.domain.Author;
 import ru.otus.trim.domain.Book;
 import ru.otus.trim.domain.Genre;
+import ru.otus.trim.service.LibraryService;
 
 import java.util.List;
 
 @ShellComponent
-@Profile("shell")
+//@Profile("shell")
 @RequiredArgsConstructor
 public class QuizCommandComponent {
 
-    private final LibraryDao library;
-
-//    @ShellMethod(value = "Start quiz", key = {"start", "run",})
-//    @ShellMethodAvailability(value = "isQuizStartAvailable")
-//    public String quizRun() {
-//        QuizAction quizAction = eventsPublisher.runQuiz();
-//        boolean complete = quizAction.isComplete() && quizAction.getRightAnsweredQuestionsCount() >= quizConfig.getEnough();
-//        return complete ? "done" : "fault";
-//    }
-
-//    @ShellMethod(value = "Enter firstname and lastname of student", key = "enter")
-//    public String studentRequest() {
-//        student = studentRequest.requestStudent();
-//        return "Student is ready";
-//    }
-
-//    @ShellMethod(value = "Add author", key = "add_author")
-//    public String addAuthor(int id, String name) {
-//        library.insertAuthor(new Author(id, name));
-//        return "author was added";
-//    }
+    private final LibraryService library;
 
     @ShellMethod(value = "Add author", key = "ins_author")
     public Author addAuthor(String name) {
-        return library.insertAuthor(name);
+        return library.getAuthor(name);
     }
 
     @ShellMethod(value = "Add book", key = "ins_book")
-    public Book addAuthor(String title, String author, String genre) {
-        return library.insertBook(title, author, genre);
+    public Book addBook(String title, String author, String genre) {
+        return library.setBook(new Book(0, title, addAuthor(author), library.getGenre(genre)));
+    }
+
+    @ShellMethod(value = "Set book genre", key = "set_genre")
+    public Book addBook(long bookID, String genre) {
+        Book book = library.getBookById(bookID);
+        book.setGenre(library.getGenre(genre));
+        return library.setBook(book);
     }
 
     @ShellMethod(value = "Remove book", key = "remove_book")
     public String removeBook(long id) {
-        boolean removed = library.deleteBookById(id);
+        Book removed = library.removeBookById(id);
         return "book was removed " + removed;
     }
 
-    @ShellMethod(value = "Remove author", key = "remove_author")
-    public String removeAuthor(int id) {
-        boolean removed = library.deleteAuthorById(id);
-        return "author was removed " + removed;
+    @ShellMethod(value = "Get book", key = "get_book")
+    public Book getBook(long id) {
+        return library.getBookById(id);
     }
 
     @ShellMethod(value = "Get all authors", key = "get_authors")
     public List<Author> getAuthors() {
-        return library.getAllAuthors();
+        return library.getAuthors();
     }
 
     @ShellMethod(value = "Get all genres", key = "get_genres")
     public List<Genre> getGenres() {
-        return library.getAllAGenres();
+        return library.getGenres();
     }
 
     @ShellMethod(value = "Get all books", key = "get_books")
     public List<Book> getBooks() {
-        return library.getAllBooks();
+        return library.getBooks();
     }
 
 }

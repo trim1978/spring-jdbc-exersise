@@ -1,35 +1,31 @@
 package ru.otus.trim;
 
-import org.h2.tools.Console;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.otus.trim.domain.Author;
 import ru.otus.trim.service.LibraryService;
 
 @SpringBootApplication
-@Profile("console")
 public class MainDemo {
 
-    public static void main(String[] args) throws Exception {
-
-
-        ApplicationContext context = SpringApplication.run(MainDemo.class, args);
-
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainDemo.class);
+        context.getEnvironment().setActiveProfiles("demo");
+        //context.register(LibraryConfig.class);
+        //context.refresh();
         LibraryService service = context.getBean(LibraryService.class);
 
         //System.out.println("All count " + ervice.library.getAuthorsCount());
 
-        service.library.insertAuthor("Lermontov");
+        Author get = service.getAuthor("Lermontov");
 
         //System.out.println("All count " + ervice.library.getAuthorsCount());
 
-        Author author = service.library.getAuthorById(2);
+        Author author = service.getAuthor(get.getName());
 
-		System.out.println("Ivan id: " + author.getId() + " name: " + author.getName());
+        System.out.println("Author id: " + author.getId() + " name: " + author.getName());
 
-		Console.main(args);
+        //Console.main(args);
 	}
 
 }
