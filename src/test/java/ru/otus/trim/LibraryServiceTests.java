@@ -71,13 +71,11 @@ class LibraryServiceTests {
 	@DisplayName("delete")
 	@Test
 	void deleteTest() {
-		library.removeBookById(1);
 		when(bookDao.getBookById(1)).thenReturn(new Book(1, TITLE_1, new Author(1, AUTHOR_PUSHKIN), new Genre(1, "")));
 		when(bookDao.deleteBookById(1)).thenReturn(true);
+		library.removeBookById(1);
 		verify(bookDao, times(1)).getBookById(1);
-		//assertThat(bookDao.getBookById(1)).isEqualTo(new Book(1, TITLE_1, new Author(1, AUTHOR_PUSHKIN), new Genre(1, "")));
 		verify(bookDao, times(1)).deleteBookById(1);
-		//assertThat(bookDao.deleteBookById(1)).isEqualTo(true);
 	}
 
 	@DisplayName("insert")
