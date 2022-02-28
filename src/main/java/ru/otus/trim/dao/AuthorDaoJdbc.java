@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class AuthorDaoJdbc implements AuthorDao {
@@ -35,8 +36,8 @@ public class AuthorDaoJdbc implements AuthorDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", name);
         KeyHolder kh = new GeneratedKeyHolder();
-        namedParameterJdbcOperations.update("INSERT INTO authors (name) values (':name')", params, kh);
-        return new Author(kh.getKey().intValue(), name);
+        namedParameterJdbcOperations.update("INSERT INTO authors (name) values (:name)", params, kh);
+        return new Author(Objects.requireNonNull(kh.getKey()).intValue(), name);
     }
 
     @Override

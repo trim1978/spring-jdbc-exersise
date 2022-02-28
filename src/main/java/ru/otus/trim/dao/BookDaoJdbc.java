@@ -10,10 +10,7 @@ import ru.otus.trim.domain.Book;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class BookDaoJdbc implements BookDao {
@@ -34,8 +31,8 @@ public class BookDaoJdbc implements BookDao {
         params.addValue("author", authorId);
         params.addValue("genre", genreId);
         KeyHolder kh = new GeneratedKeyHolder();
-        namedParameterJdbcOperations.update("INSERT INTO books(title,author,genre) VALUES (':title',:author,:genre)", params, kh);
-        return new Book(kh.getKey().longValue(), title, authorDao.getAuthorById(authorId), genreDao.getGenreById(genreId));
+        namedParameterJdbcOperations.update("INSERT INTO books(title,author,genre) VALUES (:title,:author,:genre)", params, kh);
+        return new Book(Objects.requireNonNull(kh.getKey()).longValue(), title, authorDao.getAuthorById(authorId), genreDao.getGenreById(genreId));
     }
 
     @Override

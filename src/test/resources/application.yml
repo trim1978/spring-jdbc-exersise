@@ -1,25 +1,13 @@
-datasource:
-  url: jdbc:h2:mem:library
-  #initialization-mode: always
-  #schema: schema.sql
-  #data: data.sql
-sql:
-  init:
-    mode: always
-    data-locations: data.sql
-    schema-locations: schema.sql
-
-h2:
-  console:
-    path: /h2-console
-    settings:
-      web-allow-others: true
-
 spring:
+  datasource:
+    url: jdbc:h2:mem:library
   shell:
     interactive:
       enabled: false
   main:
     allow-circular-references: true
-    #profiles:
-    #active: console
+  sql:
+    init:
+      mode: always
+      data-locations: data.sql
+      #schema-locations: schema.sql
