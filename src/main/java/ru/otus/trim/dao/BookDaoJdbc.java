@@ -1,29 +1,27 @@
 package ru.otus.trim.dao;
 
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.trim.domain.Book;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class BookDaoJdbc implements BookDao {
-
-    private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
     private final AuthorDaoJdbc authorDao;
     private final GenreDaoJdbc genreDao;
 
     public BookDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations, AuthorDaoJdbc authorDao, GenreDaoJdbc genreDao) {
-        this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
         this.authorDao = authorDao;
         this.genreDao = genreDao;
@@ -31,29 +29,13 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Book insertBook(String title, int authorId, int genreId) {
-//        namedParameterJdbcOperations.update("insert into books (id, name) values (:id, :name, :author, :genre)",
-//                Map.of("id", book.getId(), "name", book.getName(), "author", book.getAuthor().getId(), "genre", book.getGenre().getId()));
-        String sql = "INSERT INTO books(title,author,genre) VALUES (?,?,?)";
-
-        var decParams = List.of(
-                new SqlParameter(Types.VARCHAR, "title"), new SqlParameter(Types.INTEGER, "author"), new SqlParameter(Types.INTEGER, "genre"));
-
-        var pscf = new PreparedStatementCreatorFactory(sql, decParams) {
-            {
-                setReturnGeneratedKeys(true);
-                setGeneratedKeysColumnNames("id");
-            }
-        };
-        //int authorId = authorDao.getAuthorByName(author).getId();
-        //int genreId = genreDao.getGenreByName(genre).getId();
-
-        var psc = pscf.newPreparedStatementCreator(List.of(title, authorId, genreId));
-
-        var keyHolder = new GeneratedKeyHolder();
-        jdbc.update(psc, keyHolder);
-
-        int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
-        return new Book(id, title, authorDao.getAuthorById(authorId), genreDao.getGenreById(genreId));
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("title", title);
+        params.addValue("author", authorId);
+        params.addValue("genre", genreId);
+        KeyHolder kh = new GeneratedKeyHolder();
+        namedParameterJdbcOperations.update("INSERT INTO books(title,author,genre) VALUES (':title',:author,:genre)", params, kh);
+        return new Book(kh.getKey().longValue(), title, authorDao.getAuthorById(authorId), genreDao.getGenreById(genreId));
     }
 
     @Override
@@ -66,7 +48,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public List<Book> getAllBooks() {
-        return jdbc.query("select id, title, author, genre from books", new BookMapper());
+        return namedParameterJdbcOperations.query("select id, title, author, genre from books", new BookMapper());
     }
 
     @Override

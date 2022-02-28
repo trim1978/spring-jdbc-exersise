@@ -1,6 +1,5 @@
 package ru.otus.trim.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.trim.dao.AuthorDao;
@@ -14,12 +13,15 @@ import java.util.List;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
-    @Autowired
-    public BookDao books;
-    @Autowired
-    public AuthorDao authors;
-    @Autowired
-    public GenreDao genres;
+    public final BookDao books;
+    public final AuthorDao authors;
+    public final GenreDao genres;
+
+    public LibraryServiceImpl(BookDao books, AuthorDao authors, GenreDao genres) {
+        this.books = books;
+        this.authors = authors;
+        this.genres = genres;
+    }
 
     @Transactional
     @Override

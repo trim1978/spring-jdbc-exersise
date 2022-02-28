@@ -11,7 +11,6 @@ import ru.otus.trim.service.LibraryService;
 import java.util.List;
 
 @ShellComponent
-//@Profile("shell")
 @RequiredArgsConstructor
 public class QuizCommandComponent {
 

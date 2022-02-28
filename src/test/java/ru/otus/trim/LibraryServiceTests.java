@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import ru.otus.trim.dao.AuthorDao;
 import ru.otus.trim.dao.BookDao;
 import ru.otus.trim.dao.GenreDao;
@@ -15,12 +15,13 @@ import ru.otus.trim.domain.Author;
 import ru.otus.trim.domain.Book;
 import ru.otus.trim.domain.Genre;
 import ru.otus.trim.service.LibraryService;
+import ru.otus.trim.service.LibraryServiceImpl;
 
 import static org.mockito.Mockito.*;
 
 @DisplayName("Test Books CRUD")
-@ComponentScan(basePackages = "ru.otus.trim")
-@SpringBootTest
+@JdbcTest
+@Import(LibraryServiceImpl.class)
 @ExtendWith(MockitoExtension.class)
 class LibraryServiceTests {
 

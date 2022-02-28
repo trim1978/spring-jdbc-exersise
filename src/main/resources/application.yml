@@ -1,6 +1,9 @@
 spring:
   datasource:
     url: jdbc:h2:mem:library
+  shell:
+    interactive:
+      enabled: true
 
   sql:
     init:
@@ -8,14 +11,12 @@ spring:
       data-locations: data.sql
       schema-locations: schema.sql
 
+
   h2:
     console:
       path: /h2-console
       settings:
         web-allow-others: true
-
-  profiles:
-    active: shell
 
   main:
     allow-circular-references: true

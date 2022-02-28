@@ -1,6 +1,5 @@
 package ru.otus.trim.dao;
 
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -15,11 +14,11 @@ import java.util.Map;
 @Repository
 public class GenreDaoJdbc implements GenreDao {
 
-    private final JdbcOperations jdbc;
+    //private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     public GenreDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
+        //this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 
@@ -33,7 +32,7 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public List<Genre> getAllGenres() {
-        return jdbc.query("select id, name from genres", new GenreMapper());
+        return namedParameterJdbcOperations.query("select id, name from genres", new GenreMapper());
     }
 
     static class GenreMapper implements RowMapper<Genre> {
