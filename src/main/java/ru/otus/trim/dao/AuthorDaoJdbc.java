@@ -17,12 +17,9 @@ import java.util.Objects;
 
 @Repository
 public class AuthorDaoJdbc implements AuthorDao {
-
-    //private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     public AuthorDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        //this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 

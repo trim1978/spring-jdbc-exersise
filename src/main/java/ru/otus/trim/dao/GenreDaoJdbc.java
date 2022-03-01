@@ -14,11 +14,9 @@ import java.util.Map;
 @Repository
 public class GenreDaoJdbc implements GenreDao {
 
-    //private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     public GenreDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        //this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 
