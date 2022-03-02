@@ -1,1 +1,3 @@
-insert into authors (id, `name`) values (10, 'Barto');
+insert into authors (`name`) values ('Pushkin');
+insert into GENRES (id, name) values (6, 'drama');
+insert into GENRES (id, name) values (4, 'lyric');

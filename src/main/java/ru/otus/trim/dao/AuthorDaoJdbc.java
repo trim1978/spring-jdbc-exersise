@@ -1,17 +1,15 @@
 package ru.otus.trim.dao;
 
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.trim.domain.Author;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +17,9 @@ import java.util.Objects;
 
 @Repository
 public class AuthorDaoJdbc implements AuthorDao {
-
-    private final JdbcOperations jdbc;
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     public AuthorDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
     }
 
@@ -34,25 +29,12 @@ public class AuthorDaoJdbc implements AuthorDao {
         if (author != null) {
             return author;
         }
-        String sql = "INSERT INTO authors(name) VALUES (?)";
 
-        var decParams = List.of(
-                new SqlParameter(Types.VARCHAR, "name"));
-
-        var pscf = new PreparedStatementCreatorFactory(sql, decParams) {
-            {
-                setReturnGeneratedKeys(true);
-                setGeneratedKeysColumnNames("id");
-            }
-        };
-
-        var psc = pscf.newPreparedStatementCreator(List.of(name));
-
-        var keyHolder = new GeneratedKeyHolder();
-        jdbc.update(psc, keyHolder);
-
-        int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
-        return new Author(id, name);
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("name", name);
+        KeyHolder kh = new GeneratedKeyHolder();
+        namedParameterJdbcOperations.update("INSERT INTO authors (name) values (:name)", params, kh);
+        return new Author(Objects.requireNonNull(kh.getKey()).intValue(), name);
     }
 
     @Override
@@ -73,7 +55,7 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public List<Author> getAllAuthors() {
-        return jdbc.query("select id, name from authors", new AuthorMapper());
+        return namedParameterJdbcOperations.query("select id, name from authors", new AuthorMapper());
     }
 
     @Override
